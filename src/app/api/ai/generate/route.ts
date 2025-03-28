@@ -81,7 +81,13 @@ export async function POST(req: Request) {
     });
 
     // Manejo de errores al parsear la respuesta
-    let generatedDescriptions: any[] = [];
+    interface GeneratedDescription {
+      title: string;
+      description: string;
+      bullets: string[];
+    }
+
+    let generatedDescriptions: GeneratedDescription[] = [];
     try {
       const content = response.choices[0].message?.content;
       if (content) {
