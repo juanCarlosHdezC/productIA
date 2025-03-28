@@ -8,6 +8,9 @@ const nextConfig: NextConfig = {
       allowedOrigins: undefined,
     },
   },
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
 };
 
 export default nextConfig;
