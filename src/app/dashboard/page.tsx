@@ -270,7 +270,7 @@ async function DashboardPage() {
                 <li>Análisis SEO y readability score</li>
                 <li>Integración con plataformas de e-commerce</li>
               </ul>
-            ) : userPlan?.plan === "Basico" ? (
+            ) : userPlan?.plan === "Básico" ? (
               <ul className="list-disc pl-5 space-y-2 text-sm">
                 <li>
                   Actualmente tienes{" "}

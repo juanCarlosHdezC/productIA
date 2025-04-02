@@ -29,6 +29,10 @@ export default async function DashboardLayout({
   }
 
   const isPro = await checkSubscription(session.user.id);
+  const userPlan = await prisma.user.findUnique({
+    where: { id: session.user.id },
+    select: { plan: true },
+  });
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -36,21 +40,21 @@ export default async function DashboardLayout({
         <div className="container flex h-16 items-center justify-between py-4">
           <MainNav />
           <div className="hidden md:flex items-center gap-6">
-            {isPro ? (
-              <Link
-                href="/dashboard/new"
-                className="text-sm font-medium bg-primary text-primary-foreground px-4 py-2 rounded-md hover:bg-primary/90 transition-colors"
-              >
-                Nuevo Producto
-              </Link>
-            ) : (
+            {userPlan?.plan === "Basico" ? (
               <Link
                 href="/pricing"
                 className="text-sm font-medium text-muted-foreground hover:text-primary"
               >
-                Actualizar tu plan
+                Actualizar a Pro
               </Link>
-            )}
+            ) : userPlan?.plan === "Pro" ? (
+              <Link
+                href="/dashboard/settings"
+                className="text-sm font-medium text-muted-foreground hover:text-primary"
+              >
+                Administra tu plan
+              </Link>
+            ) : null}
             <UserAccountNav
               user={{
                 name: session.user.name,

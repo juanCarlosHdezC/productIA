@@ -89,6 +89,7 @@ export const authOptions: NextAuthOptions = {
           name: user.name,
           email: user.email,
           picture: user.image,
+          exp: Math.floor(Date.now() / 1000) + 60 * 60, // Expira en 1 hora
         };
       }
       if (!token.id && token.email && typeof token.email === "string") {
@@ -101,10 +102,15 @@ export const authOptions: NextAuthOptions = {
             name: dbUser.name,
             email: dbUser.email,
             picture: dbUser.image,
+            exp: Math.floor(Date.now() / 1000) + 60 * 60, // Expira en 1 hora
           };
         }
       }
       return token;
     },
+  },
+  jwt: {
+    secret: process.env.NEXTAUTH_SECRET,
+    maxAge: 3600, // 1 hora
   },
 };

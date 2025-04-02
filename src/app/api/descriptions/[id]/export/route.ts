@@ -30,10 +30,10 @@ async function checkDescriptionOwnership(
 // GET - Exportar descripción en diferentes formatos
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  context: { params: { id: string } }
 ) {
+  const { id: descriptionId } = context.params;
   try {
-    const descriptionId = params.id;
     const session = await getServerSession(authOptions);
 
     if (!session?.user?.id) {

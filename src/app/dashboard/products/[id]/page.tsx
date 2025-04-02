@@ -153,6 +153,8 @@ export default function ProductDetailPage({
         const data = await response.json();
         setProduct(data);
 
+        console.log(data);
+
         // Preparar descripciones
         const parsedDescriptions: Description[] = data.descriptions.map(
           (desc: any) => {

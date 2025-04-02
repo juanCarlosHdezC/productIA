@@ -90,8 +90,10 @@ export async function POST(req: Request) {
     let generatedDescriptions: GeneratedDescription[] = [];
     try {
       const content = response.choices[0].message?.content;
+
       if (content) {
-        generatedDescriptions = JSON.parse(content);
+        const cleanedContent = content.replace(/```json|```/g, "").trim();
+        generatedDescriptions = JSON.parse(cleanedContent);
       } else {
         throw new Error("Contenido vacío en la respuesta del modelo.");
       }

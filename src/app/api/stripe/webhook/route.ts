@@ -4,6 +4,7 @@ import { NextResponse } from "next/server";
 import Stripe from "stripe";
 import { prisma } from "@/lib/prisma";
 import { stripe } from "@/lib/stripe";
+import { string } from "zod";
 
 export async function POST(req: Request) {
   try {
@@ -29,12 +30,29 @@ export async function POST(req: Request) {
       session.subscription as string
     );
     const userId = session.metadata.userId;
-    const subscriptionData = {
+    const subscriptionData: {
+      stripeSubscriptionId: string;
+      stripeCustomerId: string;
+      stripePriceId: string;
+      stripeCurrentPeriodEnd: Date;
+      plan?: string;
+    } = {
       stripeSubscriptionId: subscription.id,
       stripeCustomerId: subscription.customer as string,
       stripePriceId: subscription.items.data[0].price.id,
       stripeCurrentPeriodEnd: new Date(subscription.current_period_end * 1000),
     };
+
+    const plan =
+      subscriptionData.stripePriceId ===
+      process.env.NEXT_PUBLIC_STRIPE_PRO_PLAN_ID
+        ? "Pro"
+        : subscriptionData.stripePriceId ===
+          process.env.NEXT_PUBLIC_STRIPE_BASIC_PLAN_ID
+        ? "Básico"
+        : undefined;
+
+    subscriptionData.plan = plan;
 
     if (event.type === "checkout.session.completed") {
       await prisma.user.update({
@@ -48,6 +66,7 @@ export async function POST(req: Request) {
         data: {
           stripePriceId: subscriptionData.stripePriceId,
           stripeCurrentPeriodEnd: subscriptionData.stripeCurrentPeriodEnd,
+          plan: subscriptionData.plan,
         },
       });
       console.log(

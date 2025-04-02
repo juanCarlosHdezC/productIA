@@ -108,6 +108,7 @@ export function DescriptionGenerator({
   };
 
   return (
+    
     <div className="w-full">
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <div className="flex justify-between items-center mb-4">
