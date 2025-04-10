@@ -271,12 +271,47 @@ export default function Home() {
                 </p>
               </div>
             </div>
-            <div className="mx-auto grid max-w-5xl grid-cols-1 gap-6 py-12 lg:grid-cols-2">
+            <div className="mx-auto grid max-w-5xl grid-cols-1 gap-6 py-12 lg:grid-cols-3">
+              <div className="flex flex-col rounded-lg border bg-background shadow-sm">
+                <div className="p-6">
+                  <h3 className="text-2xl font-bold">Gratis</h3>
+                  <div className="mt-4 flex items-baseline text-5xl font-bold">
+                    0$
+                    <span className="ml-1 text-lg font-normal text-muted-foreground">
+                      /mes
+                    </span>
+                  </div>
+                  <p className="mt-2 text-muted-foreground">
+                    Para usuarios Principiantes.
+                  </p>
+                  <ul className="mt-6 space-y-4">
+                    <li className="flex items-center">
+                      <CheckCircle className="mr-2 h-4 w-4 text-green-500" />
+                      <span>Hasta 20 descripciones por mes</span>
+                    </li>
+                    <li className="flex items-center">
+                      <CheckCircle className="mr-2 h-4 w-4 text-green-500" />
+                      <span>1 opciones por generación</span>
+                    </li>
+                    <li className="flex items-center">
+                      <CheckCircle className="mr-2 h-4 w-4 text-green-500" />
+                      <span>Historial de 7 días</span>
+                    </li>
+                  </ul>
+                </div>
+                <div className="border-t p-6">
+                  <Link href="/register">
+                    <Button className="w-full" variant="outline">
+                      Comenzar con Gratis
+                    </Button>
+                  </Link>
+                </div>
+              </div>
               <div className="flex flex-col rounded-lg border bg-background shadow-sm">
                 <div className="p-6">
                   <h3 className="text-2xl font-bold">Básico</h3>
                   <div className="mt-4 flex items-baseline text-5xl font-bold">
-                    9.99€
+                    9.99$
                     <span className="ml-1 text-lg font-normal text-muted-foreground">
                       /mes
                     </span>
@@ -311,6 +346,7 @@ export default function Home() {
                   </Link>
                 </div>
               </div>
+
               <div className="relative flex flex-col rounded-lg border-2 border-primary bg-background shadow-sm">
                 <div className="absolute -top-4 left-1/2 -translate-x-1/2 rounded-full bg-primary px-4 py-1 text-sm font-medium text-primary-foreground">
                   Popular
@@ -318,7 +354,7 @@ export default function Home() {
                 <div className="p-6">
                   <h3 className="text-2xl font-bold">Pro</h3>
                   <div className="mt-4 flex items-baseline text-5xl font-bold">
-                    29.99€
+                    29.99$
                     <span className="ml-1 text-lg font-normal text-muted-foreground">
                       /mes
                     </span>
@@ -350,10 +386,6 @@ export default function Home() {
                     <li className="flex items-center">
                       <CheckCircle className="mr-2 h-4 w-4 text-green-500" />
                       <span>Soporte prioritario</span>
-                    </li>
-                    <li className="flex items-center">
-                      <CheckCircle className="mr-2 h-4 w-4 text-green-500" />
-                      <span>Integración con Shopify y WooCommerce</span>
                     </li>
                   </ul>
                 </div>

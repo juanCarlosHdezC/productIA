@@ -40,7 +40,7 @@ export default async function DashboardLayout({
         <div className="container flex h-16 items-center justify-between py-4">
           <MainNav />
           <div className="hidden md:flex items-center gap-6">
-            {userPlan?.plan === "Basico" ? (
+            {userPlan?.plan === "Básico" ? (
               <Link
                 href="/pricing"
                 className="text-sm font-medium text-muted-foreground hover:text-primary"

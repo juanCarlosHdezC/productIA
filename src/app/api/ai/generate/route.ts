@@ -31,7 +31,18 @@ export async function POST(req: Request) {
         { status: 403 }
       );
     }
-    const maxDescriptions = isPro ? 5 : 2;
+    // Obtener el plan del usuario
+    const userPlan = await prisma.user.findUnique({
+      where: {
+        id: session.user.id,
+      },
+      select: {
+        plan: true,
+      },
+    });
+
+    const maxDescriptions =
+      userPlan?.plan === "Pro" ? 5 : userPlan?.plan === "Básico" ? 2 : 1;
 
     // Construcción del prompt
     const prompt = `
@@ -77,7 +88,12 @@ export async function POST(req: Request) {
         },
       ],
       temperature: 0.7,
-      max_tokens: isPro ? 2000 : 1000,
+      max_tokens:
+        userPlan?.plan === "Pro"
+          ? 600000
+          : userPlan?.plan === "Básico"
+          ? 150000
+          : 30000,
     });
 
     // Manejo de errores al parsear la respuesta
