@@ -36,10 +36,10 @@ async function checkProductOwnership(productId: string, userId: string) {
 // GET - Obtener un producto específico
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  context: { params: { id: string } }
 ) {
   try {
-    const productId = params.id;
+    const productId = context.params.id;
     const session = await getServerSession(authOptions);
 
     if (!session?.user?.id) {

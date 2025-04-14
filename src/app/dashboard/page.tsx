@@ -34,6 +34,8 @@ import { DescriptionGenerator } from "@/components/description-generator";
 import { RecentActivityList } from "@/components/dashboard/recent-activity";
 import { StatsCards } from "@/components/dashboard/stats-cards";
 import { ProductsGrid } from "@/components/dashboard/products-grid";
+import { UsageInfo } from "@/components/ui/usageInfo";
+import { SeoScore } from "@/components/description-generator/seo-score";
 
 async function DashboardPage() {
   const session = await getServerSession(authOptions);
@@ -102,7 +104,9 @@ async function DashboardPage() {
           isPro={isPro}
           plan={userPlan?.plan || "Básico"}
         />
+        <UsageInfo />
       </div>
+      <SeoScore descriptionId="cm9gnx5ck0003tjiclslnvl08" />
       <Tabs defaultValue="generator" className="mt-6 space-y-4">
         <TabsList>
           <TabsTrigger value="generator">

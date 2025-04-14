@@ -32,6 +32,10 @@ model User {
   stripeSubscriptionId   String?   @unique
   stripePriceId          String?
   stripeCurrentPeriodEnd DateTime?
+  descriptionQuota      Int      @default(30) // mensual
+  descriptionsUsed      Int      @default(0) // acumulado mensual
+  descriptionsToday     Int      @default(0) // generadas hoy
+  dailyResetDate        DateTime?
   
   products      Product[]
   descriptions  Description[]

@@ -121,6 +121,7 @@ export function ProductForm({
 
       if (!response.ok) {
         const errorData = await response.json();
+        console.error("Error en la respuesta:", errorData);
         throw new Error(errorData.message || "Error al generar descripciones");
       }
 
