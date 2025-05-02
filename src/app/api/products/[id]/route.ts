@@ -89,10 +89,10 @@ export async function GET(
 // PATCH - Actualizar un producto
 export async function PATCH(
   request: Request,
-  { params }: { params: { id: string } }
+  context: { params: { id: string } }
 ) {
   try {
-    const productId = params.id;
+    const productId = context.params.id;
     const session = await getServerSession(authOptions);
 
     if (!session?.user?.id) {
@@ -145,10 +145,10 @@ export async function PATCH(
 // DELETE - Eliminar un producto
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  context: { params: { id: string } }
 ) {
   try {
-    const productId = params.id;
+    const productId = context.params.id;
     const session = await getServerSession(authOptions);
 
     if (!session?.user?.id) {
