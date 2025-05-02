@@ -31,6 +31,7 @@ export async function GET() {
         stripePriceId: true,
         stripeCurrentPeriodEnd: true,
         stripeCustomerId: true,
+        plan: true,
       },
     });
 
@@ -46,6 +47,8 @@ export async function GET() {
       user.stripeSubscriptionId &&
       user.stripeCurrentPeriodEnd &&
       new Date(user.stripeCurrentPeriodEnd) > new Date();
+
+    const plan = user.plan;
 
     // Si el usuario tiene una suscripción, obtener más detalles desde Stripe
     let subscriptionDetails = null;

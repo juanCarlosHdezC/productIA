@@ -66,6 +66,7 @@ import {
 import { Description } from "@/types";
 import { DescriptionResultCard } from "@/components/description-generator/result-card";
 import { DescriptionGenerator } from "@/components/description-generator";
+import { UserPlan } from "@/lib/plan";
 
 // Esquema de validación para el formulario de productos
 const productFormSchema = z.object({
@@ -125,6 +126,7 @@ export default function ProductDetailPage({
   const [isDeleting, setIsDeleting] = useState(false);
   const [activeTab, setActiveTab] = useState("details");
   const [isPro, setIsPro] = useState(false);
+  const [plan, setPlan] = useState<string | undefined>(undefined);
 
   const productId = Array.isArray(params.id) ? params.id[0] : params.id ?? "";
 
@@ -178,10 +180,12 @@ export default function ProductDetailPage({
         });
 
         // Verificar si el usuario es Pro (esto debería obtenerse de una API real)
-        const userResponse = await fetch("/api/user/subscription");
+        const userResponse = await fetch(`/api/subscription`);
+
         if (userResponse.ok) {
           const userData = await userResponse.json();
           setIsPro(userData.isPro);
+          setPlan(userData.subscription?.plan);
         }
       } catch (error) {
         console.error("Error al cargar el producto:", error);
@@ -647,6 +651,7 @@ export default function ProductDetailPage({
                 }}
                 onSaveDescription={handleSaveDescription}
                 onDescriptionsGenerated={handleDescriptionsGenerated}
+                plan={plan}
               />
             </CardContent>
           </Card>

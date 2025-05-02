@@ -114,8 +114,6 @@ export function DescriptionGenerator({
   const bulletsActive =
     plan === "Pro" ? true : plan === "Básico" ? true : false;
 
-  console.log("BulletsActive:", plan);
-
   return (
     <div className="w-full">
       <Tabs value={activeTab} onValueChange={setActiveTab}>

@@ -20,12 +20,14 @@ interface DescriptionResultCardProps {
   description: Description;
   isPro?: boolean;
   onSave?: (description: Description) => Promise<void>;
+  plan?: string;
 }
 
 export function DescriptionResultCard({
   description,
   isPro = false,
   onSave,
+  plan,
 }: DescriptionResultCardProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [editedDescription, setEditedDescription] = useState(
@@ -76,6 +78,7 @@ export function DescriptionResultCard({
       }
     }
   };
+
 
   return (
     <Card className="w-full">
