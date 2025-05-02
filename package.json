@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "seed:test-user": "node scripts/create-test-user.ts"
+    "seed:test-user": "node scripts/create-test-user.ts",
+    "webhook:stripe": "stripe listen --forward-to localhost:3000/api/stripe/webhook"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.8.0",

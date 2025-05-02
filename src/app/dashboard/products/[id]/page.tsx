@@ -1,5 +1,4 @@
 // src/app/dashboard/products/[id]/page.tsx
-
 "use client";
 
 import { useEffect, useState } from "react";
@@ -636,7 +635,7 @@ export default function ProductDetailPage({
             </CardHeader>
             <CardContent>
               <DescriptionGenerator
-                isPro={isPro}
+                isPro={true}
                 productData={{
                   id: productId,
                   name: product.name,

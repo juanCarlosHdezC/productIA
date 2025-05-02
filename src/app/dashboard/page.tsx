@@ -29,6 +29,7 @@ import {
   Plus,
   TextIcon,
   TrendingUp,
+  User,
 } from "lucide-react";
 import { DescriptionGenerator } from "@/components/description-generator";
 import { RecentActivityList } from "@/components/dashboard/recent-activity";
@@ -51,6 +52,8 @@ async function DashboardPage() {
     where: { id: session.user.id },
     select: { plan: true },
   });
+
+  const plan = userPlan?.plan || "Gratis";
 
   // Obtener estadísticas básicas
   const totalProductsCount = await prisma.product.count({
@@ -106,7 +109,6 @@ async function DashboardPage() {
         />
         <UsageInfo />
       </div>
-      <SeoScore descriptionId="cm9gnx5ck0003tjiclslnvl08" />
       <Tabs defaultValue="generator" className="mt-6 space-y-4">
         <TabsList>
           <TabsTrigger value="generator">
@@ -140,7 +142,7 @@ async function DashboardPage() {
                   </div>
                 }
               >
-                <DescriptionGenerator isPro={isPro} />
+                <DescriptionGenerator isPro={true} plan={plan} />
               </Suspense>
             </CardContent>
           </Card>

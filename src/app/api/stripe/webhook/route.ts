@@ -36,7 +36,7 @@ export async function POST(req: Request) {
       stripePriceId: string;
       stripeCurrentPeriodEnd: Date;
       plan?: string;
-      descriptionQuota?: number;
+      tokenQuota?: number;
     } = {
       stripeSubscriptionId: subscription.id,
       stripeCustomerId: subscription.customer as string,
@@ -53,12 +53,12 @@ export async function POST(req: Request) {
         ? "Básico"
         : "Gratis";
 
-    const descriptionQuota =
-      plan === "Pro" ? 300 : plan === "Básico" ? 150 : 30;
+    const tokenQuota =
+      plan === "Pro" ? 5000000 : plan === "Básico" ? 1500000 : 300000;
 
     subscriptionData.plan = plan;
 
-    subscriptionData.descriptionQuota = descriptionQuota;
+    subscriptionData.tokenQuota = tokenQuota;
 
     if (event.type === "checkout.session.completed") {
       await prisma.user.update({
@@ -73,7 +73,9 @@ export async function POST(req: Request) {
           stripePriceId: subscriptionData.stripePriceId,
           stripeCurrentPeriodEnd: subscriptionData.stripeCurrentPeriodEnd,
           plan: subscriptionData.plan,
-          descriptionQuota: subscriptionData.descriptionQuota,
+          tokenQuota: subscriptionData.tokenQuota,
+          tokensToday: 0,
+          tokensUsed: 0,
         },
       });
       console.log(

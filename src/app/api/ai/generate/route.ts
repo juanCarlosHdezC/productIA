@@ -9,10 +9,10 @@ import { deepseekClient } from "@/lib/deepseek";
 import { prisma } from "@/lib/prisma";
 import { checkSubscription } from "@/utils/subscription";
 import { differenceInCalendarDays, startOfDay } from "date-fns";
+import { estimateTotalTokens } from "@/utils/tokenEstimator";
 
-async function checkDailyLimit(userId: string) {
+async function checkTokenLimit(userId: string, tokensToConsume: number) {
   const user = await prisma.user.findUnique({ where: { id: userId } });
-
   if (!user) throw new Error("Usuario no encontrado");
 
   const today = startOfDay(new Date());
@@ -24,36 +24,44 @@ async function checkDailyLimit(userId: string) {
     today.getMonth() + 1,
     0
   ).getDate();
-  const dailyAllowance = (user.descriptionQuota || 0) / daysInMonth;
+  const dailyLimit = Math.floor(user.tokenQuota / daysInMonth);
 
-  // Reiniciar si es un nuevo día
+  let tokensToday = user.tokensToday;
+
   if (!lastReset || differenceInCalendarDays(today, lastReset) > 0) {
+    tokensToday = 0;
     await prisma.user.update({
       where: { id: userId },
       data: {
-        descriptionsToday: 0,
+        tokensToday: 0,
         dailyResetDate: today,
       },
     });
-    user.descriptionsToday = 0;
   }
 
-  if (user.descriptionsToday >= dailyAllowance) {
-    throw new Error("Has alcanzado tu límite diario de descripciones.");
+  const remainingToday = dailyLimit - tokensToday;
+  const remainingMonth = user.tokenQuota - user.tokensUsed;
+
+  if (tokensToConsume > remainingToday) {
+    throw new Error("Excediste tu límite diario de tokens.");
   }
 
-  // Incrementar uso del día y global
+  if (tokensToConsume > remainingMonth) {
+    throw new Error("Excediste tu límite mensual de tokens.");
+  }
+
   await prisma.user.update({
     where: { id: userId },
     data: {
-      descriptionsToday: { increment: 1 },
-      descriptionsUsed: { increment: 1 },
+      tokensUsed: { increment: tokensToConsume },
+      tokensToday: { increment: tokensToConsume },
+      dailyResetDate: today,
     },
   });
 
   return {
-    remainingToday: Math.floor(dailyAllowance - user.descriptionsToday - 1), // ya se va a usar 1
-    remainingMonth: user.descriptionQuota - user.descriptionsUsed - 1,
+    remainingToday: remainingToday - tokensToConsume,
+    remainingMonth: remainingMonth - tokensToConsume,
   };
 }
 
@@ -109,7 +117,12 @@ export async function POST(req: Request) {
       );
     }
 
-    await checkDailyLimit(session.user.id); // 🔥 Aquí validamos el límite diario
+    const estimatedInputTokens = 200; // o calcula dinámicamente si quieres
+    const estimatedOutputTokens =
+      userData.plan === "Pro" ? 4000 : userData.plan === "Básico" ? 2000 : 1000;
+    const estimatedTotal = estimatedInputTokens + estimatedOutputTokens;
+
+    await checkTokenLimit(session.user.id, estimatedTotal); // 🔥 Aquí validamos el límite diario
 
     const maxDescriptions =
       userPlan?.plan === "Pro" ? 5 : userPlan?.plan === "Básico" ? 2 : 1;
@@ -143,6 +156,12 @@ export async function POST(req: Request) {
       ]
     `;
 
+    //Estimad tokens totales
+    const estimatedTokens = estimateTotalTokens(prompt, estimatedOutputTokens);
+
+    //Validar y registrar el uso de los tokens
+    await checkTokenLimit(session.user.id, estimatedTokens);
+
     // Generar descripción con Deepseek
     console.log("Prompt enviado a Deepseek:", prompt);
     const response = await deepseekClient.createChatCompletion({
@@ -159,7 +178,7 @@ export async function POST(req: Request) {
         },
       ],
       temperature: 0.7,
-      max_tokens: 2000,
+      max_tokens: estimatedOutputTokens,
       // userPlan?.plan === "Pro"
       //   ? 600000
       //   : userPlan?.plan === "Básico"

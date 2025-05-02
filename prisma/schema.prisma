@@ -6,6 +6,7 @@
 
 generator client {
   provider = "prisma-client-js"
+  engineType = "binary"
 }
 
 datasource db {
@@ -32,9 +33,9 @@ model User {
   stripeSubscriptionId   String?   @unique
   stripePriceId          String?
   stripeCurrentPeriodEnd DateTime?
-  descriptionQuota      Int      @default(30) // mensual
-  descriptionsUsed      Int      @default(0) // acumulado mensual
-  descriptionsToday     Int      @default(0) // generadas hoy
+  tokenQuota          Int      @default(300000)   // tokens disponibles al mes
+  tokensUsed          Int      @default(0)   // tokens usados en el mes
+  tokensToday         Int      @default(0)   // tokens usados hoy
   dailyResetDate        DateTime?
   
   products      Product[]

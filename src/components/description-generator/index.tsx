@@ -1,5 +1,4 @@
 // src/components/description-generator/index.tsx
-
 "use client";
 
 import { useState } from "react";
@@ -25,6 +24,9 @@ import {
   Sparkles,
 } from "lucide-react";
 import { Description } from "@/types";
+import { authOptions } from "@/lib/auth";
+import { getServerSession } from "next-auth";
+import { UserPlan } from "@/lib/plan";
 
 interface DescriptionGeneratorProps {
   isPro?: boolean;
@@ -35,6 +37,7 @@ interface DescriptionGeneratorProps {
     keywords: string;
     tone: string;
   };
+  plan?: string;
   onSaveDescription?: (description: Description) => Promise<void>;
   onDescriptionsGenerated?: (descriptions: Description[]) => void;
 }
@@ -44,6 +47,7 @@ export function DescriptionGenerator({
   productData,
   onSaveDescription,
   onDescriptionsGenerated,
+  plan,
 }: DescriptionGeneratorProps) {
   const [descriptions, setDescriptions] = useState<Description[]>([]);
   const [activeTab, setActiveTab] = useState("form");
@@ -107,8 +111,12 @@ export function DescriptionGenerator({
     setActiveTab("form");
   };
 
+  const bulletsActive =
+    plan === "Pro" ? true : plan === "Básico" ? true : false;
+
+  console.log("BulletsActive:", plan);
+
   return (
-    
     <div className="w-full">
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <div className="flex justify-between items-center mb-4">
@@ -169,7 +177,7 @@ export function DescriptionGenerator({
             </Card>
           ) : (
             <ProductForm
-              isPro={isPro}
+              isPro={true}
               initialData={productData}
               onDescriptionsGenerated={handleDescriptionsGenerated}
               setIsLoading={setIsLoading}
@@ -217,15 +225,19 @@ export function DescriptionGenerator({
                   {descriptions.length} Descripciones Generadas
                 </Badge>
 
-                {isPro ? (
+                {plan === "Pro" ? (
                   <Badge className="bg-yellow-100 text-yellow-800 hover:bg-yellow-200 text-sm px-3 py-1">
                     Plan Pro
                   </Badge>
-                ) : (
+                ) : plan === "Básico" ? (
                   <Badge variant="outline" className="text-sm px-3 py-1">
                     Plan Básico
                   </Badge>
-                )}
+                ) : plan === "Gratis" ? (
+                  <Badge variant="outline" className="text-sm px-3 py-1">
+                    Plan Gratuito
+                  </Badge>
+                ) : null}
               </div>
 
               <div className="grid grid-cols-1 gap-8">
@@ -233,7 +245,7 @@ export function DescriptionGenerator({
                   <DescriptionResultCard
                     key={index}
                     description={description}
-                    isPro={isPro}
+                    isPro={bulletsActive}
                     onSave={handleSaveDescription}
                   />
                 ))}

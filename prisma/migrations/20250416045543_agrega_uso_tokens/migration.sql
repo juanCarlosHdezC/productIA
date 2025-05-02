@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE `user` MODIFY `tokenQuota` INTEGER NOT NULL DEFAULT 500000;

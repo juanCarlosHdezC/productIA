@@ -28,19 +28,19 @@ export async function GET() {
     today.getMonth() + 1,
     0
   ).getDate();
-  const dailyAllowance = user.descriptionQuota / daysInMonth;
 
-  let descriptionsToday = user.descriptionsToday;
+  const dailyLimit = Math.floor(user.tokenQuota / daysInMonth);
+  let tokensToday = user.tokensToday;
 
   if (!lastReset || differenceInCalendarDays(today, lastReset) > 0) {
-    descriptionsToday = 0; // se reinicia si es nuevo día
+    tokensToday = 0;
   }
 
   return NextResponse.json({
     plan: user.plan,
-    dailyLimit: Math.floor(dailyAllowance),
-    remainingToday: Math.max(Math.floor(dailyAllowance - descriptionsToday), 0),
-    monthlyLimit: user.descriptionQuota,
-    remainingMonth: Math.max(user.descriptionQuota - user.descriptionsUsed, 0),
+    dailyTokenLimit: dailyLimit,
+    remainingToday: Math.max(dailyLimit - tokensToday, 0),
+    monthlyTokenLimit: user.tokenQuota,
+    remainingMonth: Math.max(user.tokenQuota - user.tokensUsed, 0),
   });
 }

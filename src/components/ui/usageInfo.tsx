@@ -4,9 +4,9 @@ import { useEffect, useState } from "react";
 
 interface Limits {
   plan: string;
-  dailyLimit: number;
+  dailyTokenLimit: number;
   remainingToday: number;
-  monthlyLimit: number;
+  monthlyTokenLimit: number;
   remainingMonth: number;
 }
 
@@ -30,18 +30,18 @@ export function UsageInfo() {
         <strong>Plan:</strong> {limits.plan}
       </p>
       <p>
-        <strong>Hoy puedes generar:</strong>{" "}
+        <strong>Tokens disponibles hoy:</strong>{" "}
         <span className="text-blue-600 font-semibold">
           {limits.remainingToday}
         </span>{" "}
-        de {limits.dailyLimit} descripciones diarias
+        / {limits.dailyTokenLimit}
       </p>
       <p>
-        <strong>Este mes te quedan:</strong>{" "}
+        <strong>Tokens restantes este mes:</strong>{" "}
         <span className="text-green-600 font-semibold">
           {limits.remainingMonth}
         </span>{" "}
-        de {limits.monthlyLimit} descripciones
+        / {limits.monthlyTokenLimit}
       </p>
     </div>
   );
